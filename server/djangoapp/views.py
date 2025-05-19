@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import logout
 from django.contrib import messages
 from datetime import datetime
-
+from django.views.decorators.http import require_http_methods
 from django.http import JsonResponse
 from django.contrib.auth import login, authenticate
 import logging
@@ -135,13 +135,47 @@ def get_dealer_details(request, dealer_id):
 
 # Create a `add_review` view to submit a review
 # def add_review(request):
+@csrf_exempt
+@require_http_methods(["POST"])
 def add_review(request):
-    if(request.user.is_anonymous == False):
-        data = json.loads(request.body)
+    if request.user.is_anonymous is False:
+        # Log raw request body
+        logger.debug("Raw request body: %s", request.body)
+        
         try:
-            response = post_review(data)
-            return JsonResponse({"status":200})
-        except:
-            return JsonResponse({"status":401,"message":"Error in posting review"})
+            data = json.loads(request.body)
+            logger.debug("Parsed JSON data: %s", data)
+            
+            try:
+                response = post_review(data)
+                logger.info("API response: %s", response)
+                return JsonResponse({"status": 200, "message": "Saved"})
+                
+            except json.JSONDecodeError as e:
+                logger.error("JSONDecodeError: Invalid JSON in request body - %s", str(e))
+                return JsonResponse(
+                    {"status": 400, "message": "Invalid JSON format"},
+                    status=400
+                )
+                
+            except Exception as e:
+                logger.exception("Error in post_review:")  # Logs full traceback
+                return JsonResponse(
+                    {"status": 500, "message": "Internal server error"},
+                    status=500
+                )
+                
+        except Exception as e:
+            logger.critical("Unexpected error in add_review: %s", str(e))
+            return JsonResponse(
+                {"status": 500, "message": "Internal server error"},
+                status=500
+            )
+            
     else:
-        return JsonResponse({"status":403,"message":"Unauthorized"})
+        logger.warning("Unauthorized access attempt from anonymous user")
+        return JsonResponse(
+            {"status": 403, "message": "Unauthorized"},
+            status=403
+        )
+
