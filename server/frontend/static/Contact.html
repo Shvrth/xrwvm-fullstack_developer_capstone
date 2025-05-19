@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dealerships</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+  <style>
+    body {
+      background: #fff;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+    .navbar {
+      background-color: #40c9c3 !important;
+      height: 64px;
+    }
+    .navbar-brand {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #000 !important;
+    }
+    .navbar-nav .nav-link {
+      font-size: 1.2rem;
+      color: #000 !important;
+    }
+    .navbar-nav .nav-link.active {
+      text-decoration: underline;
+    }
+    .main-card {
+      background: #fff;
+      border-radius: 30px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      margin: 40px auto;
+      padding: 32px;
+      max-width: 900px;
+      position: relative;
+      overflow: hidden;
+      border: 2px solid #ccc;
+    }
+    .main-card .car-image {
+      display: block;
+      margin: 0 auto 16px auto;
+      width: 70%;
+      max-width: 600px;
+      border-radius: 8px;
+      z-index: 3;
+      position: relative;
+    }
+    .contact-row {
+      display: flex;
+      flex-direction: row;
+      align-items: stretch;
+      margin-top: 32px;
+      gap: 0;
+    }
+    .contact-left, .contact-right {
+      flex: 1;
+      padding: 32px 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .contact-left {
+      align-items: center;
+      border-right: 2px solid #aaa;
+    }
+    .contact-icon {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 20px;
+      display: block;
+    }
+    .contact-right {
+      color: #2266cc;
+      font-size: 1rem;
+      font-weight: 400;
+      line-height: 1.8;
+      padding-left: 32px;
+    }
+    .contact-right a {
+      color: #2266cc;
+      text-decoration: underline;
+    }
+    @media (max-width: 800px) {
+      .main-card {
+        padding: 10px;
+      }
+      .contact-row {
+        flex-direction: column;
+      }
+      .contact-left {
+        border-right: none;
+        border-bottom: 2px solid #aaa;
+        padding-bottom: 16px;
+        margin-bottom: 16px;
+      }
+      .contact-right {
+        padding-left: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container-fluid">
+      <span class="navbar-brand">Dealerships</span>
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" href="/">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/about">About Us</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="/contact">Contact Us</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <div class="main-card">
+    <img class="car-image" src="/static/cars.jpeg" alt="Cars">
+    <div class="contact-row">
+      <div class="contact-left">
+        <!-- Simple SVG headset icon -->
+        <svg class="contact-icon" viewBox="0 0 64 64" fill="#40c9c3" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="32" cy="32" r="30" fill="#40c9c3" opacity="0.2"/>
+          <path d="M32 16a12 12 0 0 0-12 12v8a4 4 0 0 0 4 4h2v-8a6 6 0 0 1 12 0v8h2a4 4 0 0 0 4-4v-8a12 12 0 0 0-12-12z" fill="#40c9c3"/>
+          <rect x="22" y="44" width="20" height="8" rx="4" fill="#40c9c3"/>
+        </svg>
+      </div>
+      <div class="contact-right">
+        <div><strong>Contact Customer Service</strong></div>
+        support@bestcars.com<br>
+        <div><strong>Contact our National Advertising team</strong></div>
+        NationalSales@bestcars.com<br>
+        <div><strong>Contact our Public Relations team</strong></div>
+        PR@bestcars.com<br>
+        <div><strong>Contact the bestcars.com offices</strong></div>
+        312-611-1111<br>
+        <div><strong>Become a bestcars.com car dealer</strong></div>
+        Visit <a href="#">growwithbestcars.com</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
