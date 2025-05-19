@@ -5,25 +5,61 @@
   <link rel="stylesheet" href="static/style.css">
   <link rel="stylesheet" href="static/bootstrap.min.css">
 <script>
+function getCookie(name) {
+  let cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+  return cookieValue ? cookieValue.pop() : '';
+}
 
-const logout = async (e) => {
-//Include the code for logout here.
-};
+async function logout() {
+  const logout_url = window.location.origin + "/djangoapp/logout";
+  const csrfToken = getCookie('csrftoken');
 
-let checkSession = ()=>{
-  let curr_user = sessionStorage.getItem("username");
+  try {
+    const res = await fetch(logout_url, {
+      method: "POST",
+      credentials: 'include',
+      headers: {
+        "X-CSRFToken": csrfToken,
+        "Content-Type": "application/json"
+      }
+    });
 
-  if (curr_user && curr_user !== "") {
-    document.getElementById("loginlogout").innerHTML = 
-    '<span class="homepage_links">' + curr_user +'</span>' +
-    '<a class="homepage_links" onclick="logout()" href="/">Logout</a>'
-  } else {
-    document.getElementById("loginlogout").innerHTML = 
-    '<a class="homepage_links" href="/login">Login</a>'+
-    '<a class="homepage_links"  href="/register">Register</a>'
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+
+    const json = await res.json();
+    if (json.userName) {
+      alert("Logging out " + json.userName + "...");
+      sessionStorage.removeItem('username');
+      window.location.reload();
+    }
+  } catch (error) {
+    console.error('Logout failed:', error);
+    alert("Logout failed: " + error.message);
   }
- }
+}
+
+
+function checkSession() {
+  let curr_user = sessionStorage.getItem("username");
+  const loginLogoutDiv = document.getElementById("loginlogout");
+
+  if (curr_user) {
+    loginLogoutDiv.innerHTML = `
+      <span class="homepage_links">${curr_user}</span>
+      <a class="homepage_links" onclick="logout(); return false;" href="#">Logout</a>
+    `;
+  } else {
+    loginLogoutDiv.innerHTML = `
+      <a class="homepage_links" href="/login">Login</a>
+      <a class="homepage_links" href="/register">Register</a>
+    `;
+  }
+}
 </script>
+
 </head>
 <body onload="checkSession()">
 <nav class="navbar navbar-expand-lg navbar-light" style="background-color:darkturquoise; height: 1in;">
