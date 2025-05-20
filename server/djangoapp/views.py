@@ -120,28 +120,33 @@ def get_dealer_details(request, dealer_id):
 def add_review(request):
     if request.user.is_anonymous:
         logger.warning("Unauthorized access attempt from anonymous user")
-        return JsonResponse({  # [E501 fix]
+        return JsonResponse({
             "status": 403,
             "message": "Unauthorized"
         }, status=403)
 
     try:
         data = json.loads(request.body)
-        logger.debug("Parsed JSON data: %s", data)
+        logger.debug("Parsed JSON data: %s",  # [E501 fixed]
+                     data)
         response = post_review(data)
         logger.info("API response: %s", response)
         return JsonResponse({
-            "status": 200, 
+            "status": 200,
             "message": "Saved"
         })
     except json.JSONDecodeError as e:
-        logger.error("JSONDecodeError: Invalid JSON in request body - %s", str(e))
+        logger.error("JSONDecodeError: Invalid JSON - %s", str(e))
         return JsonResponse(
             {"status": 400, "message": "Invalid JSON"},
             status=400
         )
     except Exception:
         logger.exception("Error in post_review:")
+        return JsonResponse(
+            {"status": 500, "message": "Internal error"},
+            status=500
+        )
         return JsonResponse(
             {"status": 500, "message": "Internal error"},
             status=500
