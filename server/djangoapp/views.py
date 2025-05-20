@@ -3,7 +3,6 @@ from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.views.decorators.http import require_POST, require_http_methods
-from django.conf import settings
 import json
 import logging
 from .models import CarMake, CarModel
@@ -79,7 +78,10 @@ def get_cars(request):
 def get_dealerships(request, state="All"):
     endpoint = "/fetchDealers" if state == "All" else f"/fetchDealers/{state}"
     dealerships = get_request(endpoint)
-    return JsonResponse({"status": 200, "dealers": dealerships})
+     return JsonResponse({  # [E501 fix]
+        "status": 200,
+        "dealers": dealerships
+    })
 
 
 def get_dealer_reviews(request, dealer_id):
@@ -89,8 +91,14 @@ def get_dealer_reviews(request, dealer_id):
         for review_detail in reviews:
             response = analyze_review_sentiments(review_detail['review'])
             review_detail['sentiment'] = response['sentiment']
-        return JsonResponse({"status": 200, "reviews": reviews})
-    return JsonResponse({"status": 400, "message": "Bad Request"})
+        return JsonResponse({  # [E501 fix]
+            "status": 200,
+            "reviews": reviews
+        })
+    return JsonResponse({
+        "status": 400,
+        "message": "Bad Request"
+    })
 
 
 def get_dealer_details(request, dealer_id):
@@ -106,7 +114,10 @@ def get_dealer_details(request, dealer_id):
 def add_review(request):
     if request.user.is_anonymous:
         logger.warning("Unauthorized access attempt from anonymous user")
-        return JsonResponse({"status": 403, "message": "Unauthorized"}, status=403)
+        return JsonResponse({  # [E501 fix]
+            "status": 403,
+            "message": "Unauthorized"
+        }, status=403)
 
     try:
         data = json.loads(request.body)
@@ -116,7 +127,13 @@ def add_review(request):
         return JsonResponse({"status": 200, "message": "Saved"})
     except json.JSONDecodeError as e:
         logger.error("JSONDecodeError: Invalid JSON in request body - %s", str(e))
-        return JsonResponse({"status": 400, "message": "Invalid JSON format"}, status=400)
-    except Exception as e:
+        return JsonResponse(
+            {"status": 400, "message": "Invalid JSON"},
+            status=400
+        )
+    except Exception:
         logger.exception("Error in post_review:")
-        return JsonResponse({"status": 500, "message": "Internal server error"}, status=500)
+        return JsonResponse(
+            {"status": 500, "message": "Internal error"},
+            status=500
+        )
