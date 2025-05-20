@@ -78,7 +78,7 @@ def get_cars(request):
 def get_dealerships(request, state="All"):
     endpoint = "/fetchDealers" if state == "All" else f"/fetchDealers/{state}"
     dealerships = get_request(endpoint)
-     return JsonResponse({  # [E501 fix]
+    return JsonResponse({  # [E501 fix]
         "status": 200,
         "dealers": dealerships
     })
