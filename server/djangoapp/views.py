@@ -58,9 +58,15 @@ def registration(request):
             email=email
         )
         login(request, user)
-        return JsonResponse({"userName": username, "status": "Authenticated"})
+        return JsonResponse({
+            "userName": username, 
+            "status": "Authenticated"
+        })
     else:
-        return JsonResponse({"userName": username, "error": "Already Registered"})
+        return JsonResponse({
+            "userName": username, 
+            "error": "Already Registered"
+        })
 
 
 def get_cars(request):
@@ -124,7 +130,10 @@ def add_review(request):
         logger.debug("Parsed JSON data: %s", data)
         response = post_review(data)
         logger.info("API response: %s", response)
-        return JsonResponse({"status": 200, "message": "Saved"})
+        return JsonResponse({
+            "status": 200, 
+            "message": "Saved"
+        })
     except json.JSONDecodeError as e:
         logger.error("JSONDecodeError: Invalid JSON in request body - %s", str(e))
         return JsonResponse(
